@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS Resource Hub - Your Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Dark Theme Variables & Base Styles --- */
+        :root {
+            --bg-dark-primary: #12122c;
+            --bg-dark-secondary: #1a1a3a;
+            --bg-navbar-glass: rgba(28, 28, 64, 0.8);
+            --bg-card: #ffffff;
+            --text-light-primary: #ffffff;
+            --text-light-secondary: #e0e0e0;
+            --text-dark-primary: #333333;
+            --accent-primary: #8a42f5;
+            --accent-secondary: #00d1b2;
+            --accent-glow: rgba(138, 66, 245, 0.5);
+
+            --font-primary: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --font-secondary: 'Lato', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --box-shadow-dark: 0 4px 10px rgba(0, 0, 0, 0.3);
+            --box-shadow-navbar: 0 6px 20px rgba(0, 0, 0, 0.4);
+            --border-radius: 8px;
+            --border-radius-pill: 50px;
+            --transition-speed: 0.3s;
+        }
+
+        /* --- Base Styles --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-secondary);
+            line-height: 1.7;
+            color: var(--text-light-secondary);
+            background-color: var(--bg-dark-primary);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        img { max-width: 100%; height: auto; display: block; }
+        a { color: var(--accent-secondary); text-decoration: none; transition: color var(--transition-speed) ease; }
+        a:hover { color: var(--text-light-primary); text-decoration: none; }
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-primary); color: var(--text-light-primary); margin-bottom: 0.75em; line-height: 1.3; font-weight: 600; }
+        h1 { font-size: clamp(2.2rem, 6vw, 3.5rem); font-weight: 700;}
+        h2 { font-size: clamp(1.8rem, 5vw, 2.5rem); margin-top: 1.5em; border-bottom: 2px solid rgba(255, 255, 255, 0.1); padding-bottom: 0.4em; font-weight: 600;}
+        h3 { font-size: clamp(1.4rem, 4vw, 1.8rem); color: var(--text-light-primary); font-weight: 500; }
+        /* --- CHANGE: Updated default h4 style slightly --- */
+        h4 { font-size: 1.2rem; color: var(--text-dark-primary); font-weight: 600; margin-bottom: 0.6em; } /* Adjusted margin */
+        .container { width: 90%; max-width: 1100px; margin: 0 auto; padding: 20px 0; }
+        .navbar-container { width: 100%; max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        main { flex-grow: 1; padding-bottom: 40px; }
+
+        /* --- Sticky Wrapper for Navbar --- */
+        .navbar-sticky-wrapper { position: sticky; top: 0; width: 100%; z-index: 1000; padding: 15px 0; }
+
+        /* --- Navigation Bar --- */
+        .navbar { margin: 0 auto; background-color: var(--bg-navbar-glass); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: var(--border-radius-pill); box-shadow: var(--box-shadow-navbar); padding: 0.8rem 1rem; max-width: 1200px; width: 95%; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .nav-logo { font-family: var(--font-primary); font-size: 1.6rem; font-weight: 700; color: var(--text-light-primary); text-decoration: none; display: flex; align-items: center; flex-shrink: 0; }
+        .nav-logo::before { content: '◆'; display: inline-block; margin-right: 8px; color: var(--accent-primary); font-size: 1.2em; line-height: 1; }
+        .nav-links { list-style: none; display: flex; align-items: center; flex-grow: 1; justify-content: flex-end; padding-right: 10px; }
+        .nav-links li { margin-left: 20px; }
+        .nav-links a[data-target], .toc-content a[data-target] {
+            font-family: var(--font-primary);
+            font-weight: 500;
+            color: var(--text-light-secondary);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: color var(--transition-speed) ease, background-color var(--transition-speed) ease;
+            cursor: pointer;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+        .nav-links a[data-target]:hover, .toc-content a[data-target]:hover {
+            color: var(--text-light-primary);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .nav-links a[data-target].active, .toc-content a[data-target].active {
+            color: var(--text-light-primary);
+            font-weight: 600;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .nav-toggle { display: none; font-size: 1.8rem; background: none; border: none; color: var(--text-light-primary); cursor: pointer; margin-left: 15px; order: 3; }
+
+        /* --- Page Section Styling --- */
+        .page-section { display: none; animation: fadeIn 0.6s ease-in-out; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Hero Section Modifications --- */
+        .spline-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: 1;
+            pointer-events: none;
+            object-fit: cover;
+        }
+
+        .hero {
+            background-color: transparent;
+            color: var(--text-light-primary);
+            padding: clamp(60px, 15vh, 120px) 0;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #home .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        #home h1 {
+             color: var(--text-light-primary);
+             font-size: clamp(2.8rem, 8vw, 4.5rem);
+             margin-bottom: 0.4em;
+             font-weight: 700;
+             text-shadow: 0px 2px 8px rgba(0,0,0,0.7);
+             border-bottom: none;
+             margin-top: 0;
+         }
+         #home .hero-content p {
+             font-size: clamp(1rem, 3vw, 1.3rem);
+             margin-bottom: 2em;
+             font-weight: 400;
+             color: var(--text-light-secondary);
+             max-width: 650px;
+             margin-left: auto;
+             margin-right: auto;
+             text-shadow: 0px 1px 4px rgba(0,0,0,0.6);
+         }
+
+        #home .btn-hero {
+             display: inline-block;
+             background: var(--accent-primary);
+             color: var(--text-light-primary);
+             padding: 14px 35px;
+             font-size: 1.1rem;
+             font-weight: 600;
+             border: none;
+             border-radius: var(--border-radius);
+             text-decoration: none;
+             box-shadow: 0 4px 15px var(--accent-glow);
+             transition: background-color var(--transition-speed) ease, transform 0.2s ease, box-shadow var(--transition-speed) ease;
+             cursor: pointer;
+         }
+         #home .btn-hero:hover { background: #7b35e0; transform: translateY(-3px); box-shadow: 0 6px 20px var(--accent-glow); color: var(--text-light-primary); text-decoration: none; }
+
+        /* --- General Content Section Styling --- */
+         .page-content-wrapper { background-color: var(--bg-dark-secondary); padding: 40px 0 60px 0; }
+         .welcome-section { padding: 40px; border-radius: var(--border-radius); text-align: center; border: 1px solid rgba(255, 255, 255, 0.1); background-color: rgba(255, 255, 255, 0.03); margin-top: 40px; }
+         /* --- CHANGE: Adjusted h3 margin --- */
+         .welcome-section h3 { color: var(--text-light-primary); font-weight: 600; margin-bottom: 10px; text-align: center; } /* Reduced bottom margin */
+         /* --- CHANGE: Added styling for the new h4 --- */
+         .welcome-section h4 {
+             color: var(--text-light-secondary); /* Slightly muted color */
+             font-size: 1.1rem; /* Smaller than h3 */
+             font-weight: 500; /* Less bold than h3 */
+             margin-top: 0; /* Remove top margin */
+             margin-bottom: 25px; /* Space before paragraph */
+             text-align: center; /* Keep centered */
+             font-style: italic; /* Add italic style */
+         }
+         .welcome-section p { color: var(--text-light-secondary); max-width: 700px; margin: 0 auto 15px auto; text-align: left; }
+         .welcome-section p:last-of-type { margin-bottom: 0; }
+        .page-header { text-align: center; margin-bottom: 50px; padding-bottom: 15px; }
+        .page-header h2 { color: var(--text-light-primary); border-bottom: 3px solid var(--accent-primary); display: inline-block; padding-bottom: 10px; margin-top: 0; }
+
+        /* --- Card Styles --- */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 35px;
+        }
+        .content-card {
+            background-color: var(--bg-card);
+            color: var(--text-dark-primary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow-dark);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+        }
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        .card-image {
+             overflow: hidden;
+             height: 180px;
+             background-color: #f0f0f0;
+        }
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform var(--transition-speed) ease;
+        }
+        .content-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+        .card-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-content h4 { margin-bottom: 15px; font-size: 1.3rem; color: var(--text-dark-primary); } /* Style for card titles */
+        .card-content p { margin-bottom: 15px; flex-grow: 1; color: #555; line-height: 1.6; }
+        .card-content .card-link { display: inline-block; background-color: var(--accent-primary); color: var(--text-light-primary); padding: 9px 20px; border-radius: 5px; text-align: center; font-weight: 500; margin-top: auto; align-self: flex-start; border: none; font-size: 0.9rem; transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease; }
+        .card-content .card-link:hover { background-color: #7b35e0; text-decoration: none; color: var(--text-light-primary); transform: translateY(-2px); }
+
+        /* --- Table of Contents specific styling --- */
+        .toc-content {
+            background-color: rgba(255, 255, 255, 0.04);
+            padding: 20px 30px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+        }
+
+        .toc-content ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .toc-content > ul > li {
+             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+             margin-bottom: 15px;
+             padding-bottom: 15px;
+        }
+        .toc-content > ul > li:last-child {
+             border-bottom: none;
+             margin-bottom: 0;
+             padding-bottom: 0;
+        }
+
+        .toc-content a[data-target] {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-light-primary);
+            white-space: normal;
+        }
+         .toc-content a[data-target]:hover {
+             color: var(--accent-secondary);
+             background-color: transparent;
+         }
+
+        .toc-page-number {
+            font-weight: 400;
+            font-size: 0.95rem;
+            color: var(--text-light-secondary);
+            margin-left: 15px;
+            white-space: nowrap;
+        }
+
+        .toc-content ul ul {
+            margin-top: 10px;
+            padding-left: 25px;
+        }
+
+        .toc-content ul ul li {
+            color: var(--text-light-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 15px;
+        }
+        .toc-content ul ul li::before {
+            content: '-';
+            position: absolute;
+            left: 0;
+            color: var(--accent-secondary);
+        }
+        /* --- End Table of Contents styling --- */
+
+
+        /* --- Footer --- */
+        footer { background-color: var(--bg-dark-primary); color: var(--text-light-secondary); text-align: center; padding: 30px 0; margin-top: auto; font-size: 0.9rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        footer p { margin: 5px 0; color: #a0a0a0; }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+             .nav-links { justify-content: center; padding-right: 0; }
+             .content-grid {
+                 grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+             }
+        }
+        @media (max-width: 768px) {
+             .navbar-sticky-wrapper { padding: 10px 0; }
+            .navbar { width: 90%; padding: 0.5rem; }
+            .navbar-container { padding: 0 10px; flex-wrap: wrap; justify-content: space-between; position: static; }
+             .nav-logo { font-size: 1.4rem; }
+            .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 5%; width: 90%; background-color: var(--bg-dark-secondary); box-shadow: 0 10px 10px rgba(0,0,0,0.2); padding: 10px 0; border-radius: var(--border-radius); border: 1px solid rgba(255, 255, 255, 0.1); margin-top: 5px; }
+            .nav-links.active { display: flex; }
+            .nav-links li { margin: 0; text-align: center; width: 100%; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+             .nav-links li:last-child { border-bottom: none; }
+            .nav-links a[data-target] { display: block; padding: 12px; border-radius: 0; color: var(--text-light-secondary); }
+             .nav-links a[data-target].active,
+             .nav-links a[data-target]:hover { background-color: rgba(255, 255, 255, 0.1); color: var(--text-light-primary); }
+            .nav-toggle { display: block; }
+             #home .hero-content { padding: 0 15px; }
+             .welcome-section { margin-left: 15px; margin-right: 15px; padding: 30px; }
+             .hero { min-height: 50vh; }
+             .content-grid {
+                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+             }
+             .toc-content { padding: 15px 20px; }
+             .toc-content a[data-target] { font-size: 1rem; }
+             .toc-content ul ul { padding-left: 15px; }
+        }
+         @media (max-width: 480px) {
+             .content-grid {
+                 grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+             }
+             .toc-content a[data-target] { flex-direction: column; align-items: flex-start; }
+             .toc-page-number { margin-left: 0; margin-top: 5px; }
+         }
+
+    </style>
+</head>
+<body>
+    <div class="navbar-sticky-wrapper">
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="#home" data-target="home" class="nav-logo">CS Resource Hub</a>
+                <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+                <ul class="nav-links">
+                    <li><a data-target="home" class="active">Home</a></li>
+                    <li><a data-target="table-of-contents">Table of Contents</a></li>
+                    <li><a data-target="research-tools">Research Tools</a></li>
+                    <li><a data-target="professional-societies">Societies</a></li>
+                    <li><a data-target="other-websites">Websites</a></li>
+                    <li><a data-target="opportunities">Opportunities</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <main>
+            <section id="home" class="page-section active">
+                 <div class="hero">
+                      <iframe class='spline-background' src='https://my.spline.design/holoblobs-6201da9e65c54c8223ef621d710ab78a/index.html'></iframe>
+
+                      <div class="container">
+                        <div class="hero-content">
+                            <h1>Your Gateway to CS Success</h1>
+                            <p>Navigate the world of computer science with curated resources for students and early-career professionals. Secure, scalable knowledge designed to empower your growth.</p>
+                            <button data-target="research-tools" class="btn-hero nav-link-button">Explore Resources</button>
+                        </div>
+                    </div>
+                 </div>
+
+                 <div class="page-content-wrapper">
+                    <div class="container">
+                        <div class="welcome-section">
+                            <h3>Welcome to the Hub</h3>
+                            <h4>Executive Summary</h4>
+                            <p>
+                                This Digital Resource Guide is available to future and beginner computer science professionals. From the student seeking to browse through the major, to the recently graduated college individual transitioning into the digital world, this guide outlines relevant resources in which you will succeed and keep pace in today's ever-shifting digital age. The guide consists of a thoughtful list of research tools that provide access to computer science literature, academic articles, and technical reports. It includes professional societies that provide CS majors with access to mentorship, networking, and career development. Additionally, it includes helpful websites that provide platforms, tutorials, and tools for your development beyond the classroom. An appendix is also included at the end of the guide, where you can find websites where job postings, internships, and scholarship opportunities exist for the tech industry. This guide has been made to be a one-stop survival kit for anyone who is interested in thriving in the industry of Computer Science.
+                            </p>
+                            <p>
+                                The guide consists of a thoughtful list of research tools that provide access to computer science literature, academic articles, and technical reports. It includes professional societies that provide CS majors with access to mentorship, networking, and career development. Additionally, it includes helpful websites that provide platforms, tutorials, and tools for your development beyond the classroom. An appendix is also included at the end of the guide (under Opportunities), where you can find websites where job postings, internships, and scholarship opportunities exist for the tech industry. This guide has been made to be a one-stop survival kit for anyone who is interested in thriving in the industry of Computer Science.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="table-of-contents" class="page-section">
+                <div class="page-content-wrapper">
+                     <div class="container">
+                        <div class="page-header">
+                            <h2>Table of Contents</h2>
+                        </div>
+                        <div class="toc-content">
+                            <ul>
+                                <li>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 5px; font-size: 1.1rem; font-weight: 600; color: var(--text-light-primary);">
+                                        <span>Executive Summary</span>
+                                        <span class="toc-page-number">1</span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <a data-target="table-of-contents">
+                                        <span>Table of Contents</span>
+                                        <span class="toc-page-number">2</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-target="research-tools">
+                                        <span>Essential Research Tools for Computer Science Students</span>
+                                        <span class="toc-page-number">3</span>
+                                    </a>
+                                    <ul>
+                                        <li>IEEE Xplore</li>
+                                        <li>ACM Digital Library</li>
+                                        <li>arXiv.org</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a data-target="professional-societies">
+                                        <span>Top Professional Societies for Aspiring Computer Scientists and Engineers</span>
+                                        <span class="toc-page-number">4</span>
+                                    </a>
+                                    <ul>
+                                        <li>Association for Computing Machinery (ACM)</li>
+                                        <li>Institute of Electrical and Electronics Engineers (IEEE)</li>
+                                        <li>National Society of Black Engineers (NSBE)</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a data-target="other-websites">
+                                        <span>Helpful Websites for Computer Science Success and Career Growth</span>
+                                        <span class="toc-page-number">5</span>
+                                    </a>
+                                    <ul>
+                                        <li>GitHub</li>
+                                        <li>NeetCode</li>
+                                        <li>freeCodeCamp</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a data-target="opportunities">
+                                        <span>Appendix: Scholarships, Internships, and Enrichment Opportunities</span>
+                                        <span class="toc-page-number">6</span>
+                                    </a>
+                                    <ul>
+                                        <li>Job Boards</li>
+                                        <li>Internships</li>
+                                        <li>Scholarships</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        </div>
+                </div>
+            </section>
+
+            <section id="research-tools" class="page-section">
+                <div class="page-content-wrapper">
+                     <div class="container">
+                        <div class="page-header">
+                            <h2>Essential Research Tools for Computer Science Students</h2>
+                        </div>
+                        <div class="content-grid">
+                            <article class="content-card">
+                                <div class="card-image">
+                                    <img src="https://i.ytimg.com/vi/TQF0pAqS0ww/maxresdefault.jpg" alt="IEEE Xplore" onerror="this.onerror=null; this.src='https://placehold.co/400x180/cccccc/ffffff?text=IEEE+Xplore';">
+                                </div>
+                                <div class="card-content">
+                                    <h4>IEEE Xplore</h4>
+                                    <p>The IEEE Xplore Digital Library is an excellent online resource for those studying electronics, computer science, and electrical engineering. It contains more than five million documents such as books; peer-reviewed journals; conference papers, and standards from IEEE and its associated organizations. This library is an essential availability if you want to study anything new in cybersecurity, machine learning, or AI. Both students and professionals use IEEE Xplore frequently for academic and technical work because it is an original source of reputable research literature. The library is notable for its advanced search capabilities as well as its filtering options and provides an easy way to find the most relevant information about any subject.</p>
+                                    <a href="https://ieeexplore.ieee.org/" target="_blank" rel="noopener noreferrer" class="card-link">Visit IEEE Xplore</a>
+                                </div>
+                            </article>
+                            <article class="content-card">
+                                <div class="card-image">
+                                    <img src="https://www.acm.org/binaries/content/gallery/acm/ctas/publications/dl-circuit-logo.jpg" alt="ACM Digital Library" onerror="this.onerror=null; this.src='https://placehold.co/400x180/cccccc/ffffff?text=ACM+DL';">
+                                </div>
+                                <div class="card-content">
+                                    <h4>ACM Digital Library</h4>
+                                    <p>The ACM Digital Library is a rich source of literature in the field of computer science and information technology. The Association for Computing Machinery maintains this source, which provides access to thousands of conference proceedings, journal articles, technical magazines, and newsletters, and is especially helpful for understanding cutting-edge research in software engineering, data science, human-computer interaction, and theoretical computing. The library also includes papers from prestigious conferences such as SIGGRAPH, SIGCHI, and SIGPLAN. Overall, this is a great resource for students searching for peer-reviewed, high-impact content that is frequently cited in both educational and industry research literature.</p>
+                                    <a href="https://dl.acm.org/" target="_blank" rel="noopener noreferrer" class="card-link">Visit ACM DL</a>
+                                </div>
+                            </article>
+                            <article class="content-card">
+                                <div class="card-image">
+                                    <img src="https://info.arxiv.org/brand/images/brand-logo-primary.jpg" alt="arXiv.org" onerror="this.onerror=null; this.src='https://placehold.co/400x180/cccccc/ffffff?text=arXiv';">
+                                </div>
+                                <div class="card-content">
+                                    <h4>arXiv.org (CS Section)</h4>
+                                    <p>arXiv is a free-to-access online repository of preprints in mathematics, physics, and computer science. The Computer Science portion of arXiv can provide a great resource for newer - and sometimes even unpublished - research papers on a topic before it is published in a peer-reviewed journal. It includes works in the fields of artificial intelligence, machine learning, computational linguistics, systems design, and more. For authors and researchers, arXiv provides an easy way for them to get their findings out to others, facilitating sharing and collaboration. Although the manuscript is not peer-reviewed, arXiv is an excellent place to monitor trends and new technologies emerging in the field. As such, arXiv is an excellent place for students, researchers, and industry professionals to reference the very latest inventions and practices as they relate to computer science.</p>
+                                    <a href="https://arxiv.org/archive/cs" target="_blank" rel="noopener noreferrer" class="card-link">Visit arXiv CS</a>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="professional-societies" class="page-section">
+                 <div class="page-content-wrapper">
+                    <div class="container">
+                        <div class="page-header">
+                            <h2>Top Professional Societies for Aspiring Computer Scientists and Engineers</h2>
+                        </div>
+                         <div class="content-grid">
+                             <article class="content-card">
+                                 <div class="card-image">
+                                     <img src="https://i.pinimg.com/736x/9a/26/fe/9a26fe74161425fc822eee4bfdc5662a.jpg" alt="ACM Society" onerror="this.onerror=null; this.src='https://placehold.co/400x180/cccccc/ffffff?text=ACM+Society';">
+                                 </div>
+                                 <div class="card-content">
+                                     <h4>Association for Computing Machinery (ACM)</h4>
+                                     <p>ACM is one of the largest and most influential computing societies in the world. The society offers its members access to digital libraries, industry publications, networking events, and educational resources. ACM also hosts well-known conferences, including SIGGRAPH and SIGCSE, and offers special interest groups (SIGs) devoted to various subfields of computing such as AI, cybersecurity, and human-computer interaction. For students and early career professionals seeking internships, mentorship, and useful certifications to put on your résumé, ACM is extremely valuable. In addition to providing credentials for your experience and inspire you to continue learning about the newest innovations in the computing and engineering field, ACM offers the opportunity to network with a community of computing scientists and engineers from all over the world.
+</p>
+                                     <a href="https://www.acm.org" target="_blank" rel="noopener noreferrer" class="card-link">Visit ACM</a>
+                                 </div>
+                             </article>
+                             <article class="content-card">
+                                 <div class="card-image">
+                                     <img src="https://th.bing.com/th/id/OIP.CY30cM0-c9DesH_3qXkIZQHaCQ?rs=1&pid=ImgDetMain" alt="IEEE Computer Society" onerror="this.onerror=null; this.src='https://placehold.co/400x180/cccccc/ffffff?text=IEEE+CS';">
+                                 </div>
+                                 <div class="card-content">
+                                     <h4>IEEE – Computer Society</h4>
+                                     <p>An affiliation of the IEEE, the Computer Society concentrates on the promotion of the theory, practice or application of computer and information processing technology. Helping its members succeed in their careers, the IEEE Computer Society provides: access to peer-reviewed technical journals, professional development courses, standards, and conferences. They host some of the most coveted conferences in Computer Science such as the IEEE CS Security and Privacy Symposium and the International Conference on Cloud Computing. They offer reasonable student memberships that include digital library access and job tools. This society is a great way learn from experienced professionals, obtain certifications, and engage in global competitions and technical communities.</p>
+                                     <a href="https://www.computer.org" target="_blank" rel="noopener noreferrer" class="card-link">Visit IEEE CS</a>
+                                 </div>
+                             </article>
+                             <article class="content-card">
+                                 <div class="card-image">
+                                     <img src="https://diversity.bagley.msstate.edu/wp-content/uploads/Slider_NSBE05.jpg" alt="NSBE" onerror="this.onerror=null; this.src='https://placehold.co/400x180/cccccc/ffffff?text=NSBE';">
+                                 </div>
+                                 <div class="card-content">
+                                     <h4>National Society of Black Engineers (NSBE)</h4>
+                                     <p>NSBE is a vibrant organization dedicated to aiding the academic and professional development of Black engineers and computer scientists. Although it strives to be inclusive, it aims to increase the number of academically successful, professionally skilled, and culturally competent Black engineers who will serve their communities. With more than 600 chapters across the world, NSBE also provides conferences at national and regional levels and hosts career fairs, hackathons, and networking events. Members are provided with scholarships, leadership experiences and opportunities for internships with many companies. NSBE is an invaluable resource dedicated to supporting underrepresented students with a sense of belonging and community in the tech world.</p>
+                                     <a href="https://www.nsbe.org" target="_blank" rel="noopener noreferrer" class="card-link">Visit NSBE</a>
+                                 </div>
+                             </article>
+                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="other-websites" class="page-section">
+                 <div class="page-content-wrapper">
+                     <div class="container">
+                        <div class="page-header">
+                            <h2>Helpful Websites for Computer Science Success and Career Growth</h2>
+                        </div>
+                         <div class="content-grid">
+                              <article class="content-card">
+                                  <div class="card-image">
+                                      <img src="https://th.bing.com/th/id/OIP.JcxZr5-ArwNBQv_PygpBTgAAAA?rs=1&pid=ImgDetMain" alt="GitHub" onerror="this.onerror=null; this.src='https://placehold.co/400x180/cccccc/ffffff?text=GitHub';">
+                                  </div>
+                                  <div class="card-content">
+                                      <h4>GitHub</h4>
+                                      <p>GitHub is the world’s largest code-hosting and collaboration platform. It enables developers to work on a codebase for their own or other people's projects using a version control system called Git. For students studying Computer Science, GitHub is vital not only for managing school assignments and personal projects, but also for presenting your work to recruiters. This includes contributing to open-source software, building a professional portfolio, and following repositories owned by major tech companies and noted developers. Learning GitHub early prepares you for the standard practices of the industry, such as remote collaboration, in the field of Software engineering.</p>
+                                      <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="card-link">Visit GitHub</a>
+                                  </div>
+                              </article>
+                              <article class="content-card">
+                                  <div class="card-image">
+                                      <img src="https://guruscoach.com/wp-content/uploads/2023/03/NeetCode.io_-1024x465.png" alt="NeetCode" onerror="this.onerror=null; this.src='https://placehold.co/400x180/cccccc/ffffff?text=NeetCode';">
+                                  </div>
+                                  <div class="card-content">
+                                      <h4>NeetCode</h4>
+                                      <p>NeetCode is a terrific resource for your coding interview preparation, especially for large tech companies like Google, Meta, and Amazon. The site organizes problems similar to LeetCode into sections such as arrays, trees, and dynamic programming. NeetCode has video walkthroughs, cheat sheets, and study plans made for beginners and experienced programmers. NeetCode will help you grasp the underlying logic involved in problem-solving, rather than just making you memorize patterns. NeetCode is great for Computer Science majors looking to refine their data structures and algorithms knowledge for internships jobs and full-time software engineering jobs.</p>
+                                      <a href="https://neetcode.io" target="_blank" rel="noopener noreferrer" class="card-link">Visit NeetCode</a>
+                                  </div>
+                              </article>
+                              <article class="content-card">
+                                  <div class="card-image">
+                                      <img src="https://cdn.neow.in/news/images/uploaded/2021/03/1615067291_freecodecamp_story.jpg" alt="freeCodeCamp" onerror="this.onerror=null; this.src='https://placehold.co/400x180/cccccc/ffffff?text=freeCodeCamp';">
+                                  </div>
+                                  <div class="card-content">
+                                      <h4>freeCodeCamp</h4>
+                                      <p>freeCodeCamp is a nonprofit that offers thousands of hours of coding lessons in web development, data science, machine learning, and more. The platform is entirely interactive and includes hands-on coding challenges, certification programs, and even full projects. You don’t need to be a Computer Science major to benefit from the site; freeCodeCamp is also great for Computer Science students who want to enrich their skill set beyond the college classroom. Bright-eyed students can jump into frontend frameworks like React or backend development with Node.js - all at their own pace and it can even assist students to grow a portfolio.Most importantly, it’s all completely free, so it is a great value in terms of personal or career development.</p>
+                                      <a href="https://www.freecodecamp.org" target="_blank" rel="noopener noreferrer" class="card-link">Visit freeCodeCamp</a>
+                                  </div>
+                              </article>
+                         </div>
+                     </div>
+                 </div>
+            </section>
+
+            <section id="opportunities" class="page-section">
+                 <div class="page-content-wrapper">
+                     <div class="container">
+                        <div class="page-header">
+                            <h2>Scholarships, Internships, and Enrichment Opportunities</h2>
+                        </div>
+                         <div class="content-grid">
+                               <article class="content-card">
+                                   <div class="card-image">
+                                       <img src="https://lh3.googleusercontent.com/wgyIFLzwao6TvN8cG2qTwF44e0bSJ3w_xF6-fZZQNLs4t8edVsED2PjsgbASfaTzykpLNJYOk6kVfq9DgZqeP3Rl6KNLjWSjv3_HrQj3TeRzmMO-Tkf8LRoZbz-S0NiCtKUy7nYK" alt="LinkedIn Jobs" onerror="this.onerror=null; this.src='https://placehold.co/400x180/cccccc/ffffff?text=LinkedIn+Jobs';">
+                                   </div>
+                                   <div class="card-content">
+                                       <h4>LinkedIn Jobs</h4>
+                                       <p>LinkedIn is a networking website, but it is also a job board. You can find internships, full-time jobs, and entry-level tech positions. Many of the listings are posted directly by the recruiters, and you can apply with one easy click, using your LinkedIn profile. You can filter the listings based on location, job type, company, or experience level. This is especially beneficial for computer science students, as companies usually have internship roles posted early in the academic year. Plus, building your LinkedIn profile improves your visibility in front of recruiters in the tech field.</p>
+                                       <a href="https://www.linkedin.com/jobs" target="_blank" rel="noopener noreferrer" class="card-link">Visit LinkedIn Jobs</a>
+                                   </div>
+                               </article>
+                               <article class="content-card">
+                                   <div class="card-image">
+                                       <img src="https://th.bing.com/th/id/R.d02a0ac512f166b3d0b27843b64d38b3?rik=lPPKKQvjfQH7HQ&riu=http%3a%2f%2fwww.bu.edu%2ffiles%2f2016%2f09%2fHandshake_Screen_Shot_4.png&ehk=7AY9qRskTXQj3W0ArhISehxenResBhvHfpwZ%2fmKmdw4%3d&risl=&pid=ImgRaw&r=0" alt="Handshake" onerror="this.onerror=null; this.src='https://placehold.co/400x180/cccccc/ffffff?text=Handshake';">
+                                   </div>
+                                   <div class="card-content">
+                                       <h4>Handshake</h4>
+                                       <p>Handshake is a job and internship portal specifically designed for college students. It connects users with employers seeking recent grads or undergraduate students. Many listings are only available to students at schools that partner with Handshake. You can find internships at startup companies, Fortune 500 companies, and university research labs. Handshake also includes reviews of companies by students, as well as resources for online career fairs and one-on-one meetings with employers. Overall, Handshake is an exciting starting point for students who want to gain work experience before graduating.</p>
+                                       <a href="https://joinhandshake.com" target="_blank" rel="noopener noreferrer" class="card-link">Visit Handshake</a>
+                                   </div>
+                               </article>
+                               <article class="content-card">
+                                   <div class="card-image">
+                                       <img src="https://cdn.uconnectlabs.com/wp-content/uploads/sites/18/2019/10/Scholarshipscom-College-Scholarship-Search.png" alt="Scholarships.com" onerror="this.onerror=null; this.src='https://placehold.co/400x180/cccccc/ffffff?text=Scholarships.com';">
+                                   </div>
+                                   <div class="card-content">
+                                       <h4>Scholarships.com (CS)</h4>
+                                       <p>Scholarships.com maintains an up-to-date listing of scholarships to be awarded specifically to Computer Science majors. The site allows searches by major, background or merit for both private and institutional scholarships. Whether you're a freshman or a master's student, there are scholarships available for your field of study or future career. The site can be a great resource for finding scholarship opportunities that you may never hear about from on-campus resources—particularly scholarships for underrepresented students in technology.</p>
+                                       <a href="https://www.scholarships.com/financial-aid/college-scholarships/scholarships-by-major/computer-science-scholarships/" target="_blank" rel="noopener noreferrer" class="card-link">Visit Scholarships.com</a>
+                                   </div>
+                               </article>
+                         </div>
+                     </div>
+                 </div>
+            </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© <span id="current-year"></span> CS Resource Hub. All rights reserved.</p>
+            <p>Empowering the next generation of computer scientists.</p>
+        </div>
+    </footer>
+
+    <script>
+        // JavaScript remains the same - it will automatically handle the new section and links
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.querySelector('.nav-toggle');
+            const navLinksContainer = document.querySelector('.nav-links');
+            const navTriggers = document.querySelectorAll('.nav-links a[data-target], .toc-content a[data-target], .btn-hero[data-target]');
+            const pageSections = document.querySelectorAll('.page-section');
+            const currentYearSpan = document.getElementById('current-year');
+            const navbarWrapper = document.querySelector('.navbar-sticky-wrapper');
+
+            // Set current year in footer
+            if (currentYearSpan) {
+                currentYearSpan.textContent = new Date().getFullYear();
+            }
+
+            // Function to handle page switching and active states
+            function setActivePage(targetId) {
+                 document.querySelectorAll('.nav-links a[data-target]').forEach(trigger => {
+                     trigger.classList.toggle('active', trigger.dataset.target === targetId);
+                 });
+
+                pageSections.forEach(section => {
+                    section.classList.toggle('active', section.id === targetId);
+                });
+
+                if (navLinksContainer && navLinksContainer.classList.contains('active')) {
+                    navLinksContainer.classList.remove('active');
+                }
+
+                 const targetElement = document.getElementById(targetId);
+                 if (targetElement) {
+                     let offsetTop = targetElement.offsetTop;
+                     if (targetId !== 'home' && navbarWrapper) {
+                          const wrapperPaddingTop = parseFloat(window.getComputedStyle(navbarWrapper).paddingTop);
+                          const navbarHeight = navbarWrapper.querySelector('.navbar').offsetHeight;
+                          const extraPadding = 20;
+                          const fixedOffset = wrapperPaddingTop + navbarHeight + wrapperPaddingTop + extraPadding;
+                          offsetTop -= fixedOffset;
+                     } else if (targetId === 'home') {
+                         offsetTop = 0;
+                     }
+
+                     window.scrollTo({
+                         top: Math.max(0, offsetTop),
+                         behavior: 'smooth'
+                     });
+                 }
+            }
+
+            // Mobile Menu Toggle Logic
+            if (navToggle && navLinksContainer) {
+                navToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    navLinksContainer.classList.toggle('active');
+                });
+
+                 document.addEventListener('click', (e) => {
+                    const navbarElement = navLinksContainer.closest('.navbar-sticky-wrapper');
+                     if (navLinksContainer.classList.contains('active') &&
+                         !navLinksContainer.contains(e.target) &&
+                         !navToggle.contains(e.target) &&
+                         (!navbarElement || !navbarElement.contains(e.target))
+                         ) {
+                         navLinksContainer.classList.remove('active');
+                     }
+                 });
+            }
+
+            // Attach event listeners to all navigation triggers (links and buttons)
+            navTriggers.forEach(trigger => {
+                trigger.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = trigger.dataset.target;
+                    if (targetId) {
+                        setActivePage(targetId);
+                    }
+                });
+            });
+
+             // Ensure the initial page state is correct on load (show home, highlight home link)
+             pageSections.forEach(section => {
+                section.classList.toggle('active', section.id === 'home');
+             });
+             document.querySelectorAll('.nav-links a[data-target]').forEach(trigger => {
+                 trigger.classList.toggle('active', trigger.dataset.target === 'home');
+             });
+        });
+    </script>
+
+</body>
+</html>
